@@ -1,0 +1,242 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Google Fonts fallback ──────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
+
+/* ── CSS Variables ──────────────────────────────────────────────────── */
+:root {
+  --bg-base: #0b0b10;
+  --bg-card: #13131a;
+  --bg-elevated: #1a1a24;
+  --border: #252535;
+  --border-subtle: #1e1e2e;
+  --text-primary: #e8e8f0;
+  --text-secondary: #8888a8;
+  --text-muted: #55556a;
+  --accent: #7c6af7;
+  --accent-dim: #7c6af720;
+  --accent-hover: #6b5ce7;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --online: #34d399;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+}
+
+/* ── Base Reset ─────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ── Ant Design Theme Overrides ─────────────────────────────────────── */
+.ant-btn-primary {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+.ant-btn-primary:hover {
+  background: var(--accent-hover) !important;
+  border-color: var(--accent-hover) !important;
+}
+.ant-input, .ant-input-password {
+  background: var(--bg-elevated) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+.ant-input:focus, .ant-input-password:focus-within {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px var(--accent-dim) !important;
+}
+.ant-modal-content {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+}
+.ant-modal-header { background: transparent !important; }
+.ant-modal-title { color: var(--text-primary) !important; }
+.ant-dropdown-menu {
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border) !important;
+}
+.ant-dropdown-menu-item:hover { background: var(--accent-dim) !important; }
+.ant-dropdown-menu-item { color: var(--text-primary) !important; }
+.ant-message-notice-content {
+  background: var(--bg-elevated) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* ── Utility Classes ────────────────────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.card-elevated {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #7c6af7, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.avatar-ring {
+  ring: 2px solid var(--accent);
+  ring-offset: 2px;
+  ring-offset-color: var(--bg-base);
+}
+
+/* ── Animations ─────────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in { animation: fadeIn 0.25s ease-out; }
+
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-elevated) 25%, var(--border) 50%, var(--bg-elevated) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+
+/* ── Post Image Grid ─────────────────────────────────────────────────── */
+.post-images-1 { display: grid; grid-template-columns: 1fr; }
+.post-images-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+.post-images-3 { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+.post-images-3 .first { grid-row: span 2; }
+.post-images-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+
+.post-images-1 img,
+.post-images-2 img,
+.post-images-3 img,
+.post-images-4 img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.post-images-1 img { height: 380px; }
+.post-images-1 img:hover,
+.post-images-2 img:hover,
+.post-images-3 img:hover,
+.post-images-4 img:hover { opacity: 0.9; }
+/* ── Utility Classes ────────────────────────────────────────────────── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.search-input-responsive .ant-input {
+  height: 48px !important;
+  font-size: 16px !important;
+}
+
+@media (max-width: 640px) {
+  .search-input-responsive .ant-input {
+    height: 42px !important;
+    font-size: 14px !important;
+  }
+}
+
+/* ── Mobile Navigation ─────────────────────────────────────────────── */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: rgba(19, 19, 26, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 50;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.mobile-bottom-nav .nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.mobile-bottom-nav .nav-item.active {
+  color: var(--accent);
+}
+
+.mobile-bottom-nav .nav-item .anticon {
+  font-size: 20px;
+}
+
+.fab-button {
+  position: fixed;
+  right: 20px;
+  bottom: 84px;
+  width: 56px;
+  height: 56px;
+  border-radius: 28px;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 4px 12px rgba(124, 106, 247, 0.4);
+  border: none;
+  cursor: pointer;
+  z-index: 45;
+  transition: all 0.2s;
+}
+
+.fab-button:active {
+  transform: scale(0.9) rotate(5deg);
+}
+
+.mobile-header {
+  position: sticky;
+  top: 0;
+  height: 60px;
+  background: rgba(11, 11, 16, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 40;
+}
