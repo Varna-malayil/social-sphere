@@ -90,7 +90,7 @@ const ChatPage: React.FC = () => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [typingUser, setTypingUser] = useState('');
-  const typingTimeout = useRef<NodeJS.Timeout>();
+  const typingTimeout = useRef<ReturnType<typeof setTimeout>>();
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const { data: conversations, isLoading: convsLoading, refetch: refetchConvs } = useConversations();
