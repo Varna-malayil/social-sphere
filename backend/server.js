@@ -34,19 +34,33 @@ const { socketAuth } = require('./middleware/auth');
 const app = express();
 const server = http.createServer(app);
 
-// Enable CORS early to handle all requests/preflights
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
-  credentials: true,
-}));
+// Define allowed origins
+const allowedOrigins = [
+  'https://social-sphere1-app.netlify.app',
+  'http://localhost:3000',
+  process.env.CLIENT_URL
+].filter(Boolean);
 
-// Initialize Socket.IO
-const io = socketio(server, {
-  cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
-    methods: ['GET', 'POST'],
-    credentials: true,
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
   },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+// Enable CORS early
+app.use(cors(corsOptions));
+
+// Initialize Socket.IO with the same CORS settings
+const io = socketio(server, {
+  cors: corsOptions,
 });
 
 // Make io accessible throughout the app
