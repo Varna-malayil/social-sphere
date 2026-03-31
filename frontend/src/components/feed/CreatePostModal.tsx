@@ -13,7 +13,7 @@ const CreatePostModal: React.FC<Props> = ({ open, onClose }) => {
   const { user } = useAuthStore();
   const createPost = useCreatePost();
   const [content, setContent] = useState('');
-  const [visibility, setVisibility] = useState<'public' | 'followers' | 'private'>('public');
+  const [visibility, setVisibility] = useState<'public' | 'followers'>('public');
   const [images, setImages] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -72,7 +72,6 @@ const CreatePostModal: React.FC<Props> = ({ open, onClose }) => {
               options={[
                 { value: 'public', label: '🌍 Public' },
                 { value: 'followers', label: '👥 Followers' },
-                { value: 'private', label: '🔒 Only me' },
               ]}
             />
           </div>
