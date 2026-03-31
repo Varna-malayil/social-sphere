@@ -34,6 +34,12 @@ const { socketAuth } = require('./middleware/auth');
 const app = express();
 const server = http.createServer(app);
 
+// Enable CORS early to handle all requests/preflights
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  credentials: true,
+}));
+
 // Initialize Socket.IO
 const io = socketio(server, {
   cors: {
@@ -68,10 +74,6 @@ app.use('/api/auth/', authLimiter);
 
 // ─── General Middleware ───────────────────────────────────────────────────────
 app.use(compression());
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
-  credentials: true,
-}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
