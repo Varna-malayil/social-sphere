@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Input, Button, message } from 'antd';
 import { UserOutlined, MailOutlined, LockOutlined } from '@ant-design/icons';
 import { authAPI } from '@/api';
-import { useAuthStore } from '@/store/authStore';
 
 const Field = ({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) => (
   <div>
@@ -15,7 +14,6 @@ const Field = ({ label, error, children }: { label: string; error?: string; chil
 );
 
 const RegisterPage: React.FC = () => {
-  const { setAuth } = useAuthStore();
   const navigate = useNavigate();
   const [form, setForm] = useState({ username: '', email: '', password: '', confirm: '' });
   const [loading, setLoading] = useState(false);
@@ -38,10 +36,10 @@ const RegisterPage: React.FC = () => {
     if (!validate()) return;
     setLoading(true);
     try {
-      const { data } = await authAPI.register({
+      await authAPI.register({
         username: form.username, email: form.email, password: form.password,
       });
-      setAuth(data.data, data.token!);
+      message.success('Registration successful! Please login.');
       navigate('/login');
     } catch (err: any) {
       message.error(err.response?.data?.message || 'Registration failed');
