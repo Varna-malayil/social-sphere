@@ -42,7 +42,7 @@ const RegisterPage: React.FC = () => {
         username: form.username, email: form.email, password: form.password,
       });
       setAuth(data.data, data.token!);
-      navigate('/');
+      navigate('/login');
     } catch (err: any) {
       message.error(err.response?.data?.message || 'Registration failed');
     } finally {
