@@ -1,8 +1,8 @@
 // src/api/client.ts - Axios instance with interceptors
 import axios from 'axios';
-
+const API_URL = import.meta.env.VITE_BASE_API_URL;
 const client = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: API_URL,
   headers: { 'Content-Type': 'application/json' },
 });
 
