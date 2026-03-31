@@ -32,17 +32,27 @@ const getUserProfile = asyncHandler(async (req, res) => {
 const updateProfile = asyncHandler(async (req, res) => {
   const { displayName, bio, website, location } = req.body;
 
-  const updateData = { displayName, bio, website, location };
+  const updateData = {};
 
-  // Handle avatar upload
+  //  Only update fields if they are provided
+  if (displayName !== undefined) updateData.displayName = displayName;
+  if (bio !== undefined) updateData.bio = bio;
+  if (website !== undefined) updateData.website = website;
+  if (location !== undefined) updateData.location = location;
+
+  //  Handle avatar
   if (req.file) {
     updateData.avatar = req.file.path || req.file.secure_url;
   }
 
-  const user = await User.findByIdAndUpdate(req.user.id, updateData, {
-    new: true,
-    runValidators: true,
-  }).select('-password');
+  const user = await User.findByIdAndUpdate(
+    req.user.id,
+    { $set: updateData }, //  IMPORTANT
+    {
+      new: true,
+      runValidators: true,
+    }
+  ).select('-password');
 
   res.json({ success: true, data: user });
 });

@@ -57,19 +57,30 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleSaveProfile = () => {
-    const fd = new FormData();
+  if (!profile) return;
+  const fd = new FormData();
+
+  if (editForm.displayName !== profile.displayName)
     fd.append('displayName', editForm.displayName);
+
+  if (editForm.bio !== profile.bio)
     fd.append('bio', editForm.bio);
+
+  if (editForm.website !== profile.website)
     fd.append('website', editForm.website);
+
+  if (editForm.location !== profile.location)
     fd.append('location', editForm.location);
-    if (avatarFile) fd.append('avatar', avatarFile);
-    updateProfile.mutate(fd, {
-      onSuccess: (data) => {
-        updateUser(data as any);
-        setEditOpen(false);
-      },
-    });
-  };
+
+  if (avatarFile) fd.append('avatar', avatarFile);
+
+  updateProfile.mutate(fd, {
+    onSuccess: (data) => {
+      updateUser(data as any);
+      setEditOpen(false);
+    },
+  });
+};
 
   if (profileLoading) return (
     <div className="flex justify-center py-20"><Spin size="large" /></div>

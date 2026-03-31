@@ -35,7 +35,9 @@ const createPost = asyncHandler(async (req, res) => {
     content,
     images,
     tags: tags ? tags.split(',').map((t) => t.trim().toLowerCase()) : [],
-    visibility: visibility || 'public',
+    visibility: ['public', 'followers'].includes(visibility)
+      ? visibility
+      : 'public',
   });
 
   await User.findByIdAndUpdate(req.user.id, { $inc: { postsCount: 1 } });
@@ -52,20 +54,34 @@ const createPost = asyncHandler(async (req, res) => {
  */
 const getFeed = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
+
   const currentUser = await User.findById(req.user.id);
-  const feedUserIds = [...currentUser.following, req.user.id];
 
-  const total = await Post.countDocuments({
-    author: { $in: feedUserIds },
+  const query = {
     isDeleted: false,
-    visibility: { $in: ['public', 'followers'] },
-  });
+    $or: [
+      //  Public posts (from following + yourself)
+      {
+        author: { $in: [...currentUser.following, req.user.id] },
+        visibility: 'public',
+      },
 
-  const posts = await Post.find({
-    author: { $in: feedUserIds },
-    isDeleted: false,
-    visibility: { $in: ['public', 'followers'] },
-  })
+      // 👥 Followers-only posts (ONLY from people you follow)
+      {
+        author: { $in: currentUser.following },
+        visibility: 'followers',
+      },
+
+      // 👤 Always include your own posts (CRITICAL FIX)
+      {
+        author: req.user.id,
+      },
+    ],
+  };
+
+  const total = await Post.countDocuments(query);
+
+  const posts = await Post.find(query)
     .populate('author', 'username displayName avatar isVerified')
     .sort({ createdAt: -1 })
     .skip((page - 1) * limit)
@@ -102,7 +118,7 @@ const getPosts = asyncHandler(async (req, res) => {
     .sort({ createdAt: -1 })
     .skip((page - 1) * limit)
     .limit(parseInt(limit));
- 
+
   res.json({
     success: true,
     data: posts,
@@ -110,7 +126,7 @@ const getPosts = asyncHandler(async (req, res) => {
     page: parseInt(page),
     pages: Math.ceil(total / limit),
   });
-  
+
 
 });
 
@@ -133,22 +149,35 @@ const getPost = asyncHandler(async (req, res) => {
  * @route   GET /api/posts/user/:userId
  * @access  Public
  */
+
 const getUserPosts = asyncHandler(async (req, res) => {
   const { page = 1, limit = 12 } = req.query;
+
+  const isOwner = req.user && req.user.id === req.params.userId;
+
   const query = {
     author: req.params.userId,
     isDeleted: false,
-    visibility: 'public',
+    visibility: isOwner
+      ? { $in: ['public', 'followers'] } //  owner sees all
+      : 'public', //  others see only public
   };
 
   const total = await Post.countDocuments(query);
+
   const posts = await Post.find(query)
     .populate('author', 'username displayName avatar isVerified')
     .sort({ createdAt: -1 })
     .skip((page - 1) * limit)
     .limit(parseInt(limit));
 
-  res.json({ success: true, data: posts, total, page: parseInt(page), pages: Math.ceil(total / limit) });
+  res.json({
+    success: true,
+    data: posts,
+    total,
+    page: parseInt(page),
+    pages: Math.ceil(total / limit),
+  });
 });
 
 /**
