@@ -12,6 +12,7 @@ import type { Post } from '@/types';
 import { useAuthStore } from '@/store/authStore';
 import { useToggleLike, useDeletePost } from '@/hooks/useQueries';
 import CommentSection from './CommentSection';
+import EditPostModal from './EditPostModal';
 
 dayjs.extend(relativeTime);
 
@@ -20,6 +21,7 @@ interface Props { post: Post; }
 const PostCard: React.FC<Props> = ({ post }) => {
   const { user } = useAuthStore();
   const [showComments, setShowComments] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
   const toggleLike = useToggleLike();
   const deletePost = useDeletePost();
@@ -56,7 +58,7 @@ const PostCard: React.FC<Props> = ({ post }) => {
   const handleMenu = ({ key }: { key: string }) => {
     if (key === 'delete') handleDelete();
     if (key === 'share') { navigator.clipboard.writeText(`${window.location.origin}/posts/${post._id}`); }
-    if (key === 'edit') navigate(`/posts/${post._id}?edit=true`);
+    if (key === 'edit') setShowEdit(true);
   };
 
   const imgCount = post.images?.length || 0;
@@ -152,6 +154,9 @@ const PostCard: React.FC<Props> = ({ post }) => {
         styles={{ body: { padding: 0 }, content: { background: 'transparent', boxShadow: 'none' } }}>
         {lightboxImg && <img src={lightboxImg} alt="" className="max-w-full max-h-[85vh] rounded-xl object-contain" />}
       </Modal>
+
+      {/* Edit Modal */}
+      <EditPostModal open={showEdit} onClose={() => setShowEdit(false)} post={post} />
     </article>
   );
 };

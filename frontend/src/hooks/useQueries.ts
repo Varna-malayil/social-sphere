@@ -33,6 +33,21 @@ export const useCreatePost = () => {
   });
 };
 
+export const useUpdatePost = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: { content?: string; visibility?: string; tags?: string } }) =>
+      postsAPI.updatePost(id, data).then((r) => r.data.data),
+    onSuccess: (updatedPost) => {
+      qc.invalidateQueries({ queryKey: ['feed'] });
+      qc.invalidateQueries({ queryKey: ['userPosts'] });
+      qc.invalidateQueries({ queryKey: ['post', updatedPost._id] });
+      antMessage.success('Post updated!');
+    },
+    onError: (err: any) => antMessage.error(err.response?.data?.message || 'Failed to update post'),
+  });
+};
+
 export const useDeletePost = () => {
   const qc = useQueryClient();
   return useMutation({

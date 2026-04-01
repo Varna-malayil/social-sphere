@@ -35,7 +35,7 @@ export const postsAPI = {
     client.get<PaginatedResponse<Post>>(`/posts/user/${userId}?page=${page}`),
   createPost: (data: FormData) =>
     client.post<ApiResponse<Post>>('/posts', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  updatePost: (id: string, data: { content?: string; visibility?: string }) =>
+  updatePost: (id: string, data: { content?: string; visibility?: string; tags?: string }) =>
     client.put<ApiResponse<Post>>(`/posts/${id}`, data),
   deletePost: (id: string) => client.delete(`/posts/${id}`),
   toggleLike: (id: string) => client.put<ApiResponse<{ liked: boolean; likesCount: number }>>(`/posts/${id}/like`),
